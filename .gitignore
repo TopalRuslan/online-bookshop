@@ -31,6 +31,11 @@ staticfiles/
 .env.*.local
 
 # =========================
+# Kubernetes — real Secret manifests (use secret.example.yaml as the template)
+# =========================
+k8s/**/secret.yaml
+
+# =========================
 # IDE / editors
 # =========================
 .vscode/

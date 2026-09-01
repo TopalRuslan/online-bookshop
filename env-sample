@@ -14,8 +14,9 @@ SECRET_KEY=django-insecure-change-me-in-production
 # Set to false in production
 DEBUG=true
 
-# Comma-separated, no spaces. Defaults to localhost,127.0.0.1,0.0.0.0,13.223.155.69,web if unset.
+# Comma-separated, no spaces. Defaults to localhost,127.0.0.1,0.0.0.0,web if unset.
 # deploy.sh sets this automatically on EC2 (detects the instance's public IP).
+# In Kubernetes it comes from k8s/base/configmap.yaml (+ the prod overlay).
 # ALLOWED_HOSTS=localhost,127.0.0.1,your-domain.com,your-ec2-ip,web
 
 

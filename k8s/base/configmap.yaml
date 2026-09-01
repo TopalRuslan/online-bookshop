@@ -1,0 +1,40 @@
+# Non-secret configuration for the app (web, celery, migrate Job).
+# Consumed via `envFrom: [configMapRef: {name: bookshop-config}]`.
+#
+# Real per-environment values (bucket name, ALLOWED_HOSTS, DEBUG) are patched
+# in overlays/local and overlays/prod — keep this base sane and safe.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bookshop-config
+data:
+  # --- Django ---
+  DEBUG: "false"
+  ALLOWED_HOSTS: "bookshop.local,web,localhost,127.0.0.1"
+
+  # --- Database (host/name/port only; user & password live in the Secret) ---
+  DB_HOST: "postgres"
+  DB_NAME: "bookshop"
+  DB_PORT: "5432"
+
+  # --- Redis / Celery ---
+  REDIS_URL: "redis://redis:6379/1"
+  CELERY_BROKER_URL: "redis://redis:6379/2"
+
+  # --- AWS S3 (media). Empty bucket name => Django falls back to local media/.
+  #     Set AWS_STORAGE_BUCKET_NAME in overlays/prod. ---
+  AWS_STORAGE_BUCKET_NAME: ""
+  AWS_S3_REGION_NAME: "us-east-1"
+
+  # --- Stripe. Publishable key is NOT secret — it is rendered into the
+  #     checkout page and sent to every browser. Secret & webhook keys are
+  #     in the Secret. ---
+  STRIPE_PUBLIC_KEY: "pk_test_replace_me"
+
+  # --- Email. Defaults print to stdout; override the block in overlays/prod
+  #     (host/port/tls) — credentials go in the Secret. ---
+  EMAIL_BACKEND: "django.core.mail.backends.console.EmailBackend"
+  EMAIL_HOST: ""
+  EMAIL_PORT: "587"
+  EMAIL_USE_TLS: "true"
+  DEFAULT_FROM_EMAIL: "BookShop <noreply@bookshop.ua>"

@@ -215,7 +215,7 @@ DEFAULT_FROM_EMAIL=BookShop <your@gmail.com>
 ```
 ALLOWED_HOSTS=localhost,127.0.0.1,your-domain.com,your-ec2-ip,web
 ```
-Defaults to `localhost,127.0.0.1,0.0.0.0,13.223.155.69,web` if unset. If you use [`deploy.sh`](deploy.sh) (see [Terraform](#🏗️-terraform-aws-infrastructure) section), this is set automatically.
+Defaults to `localhost,127.0.0.1,0.0.0.0,web` if unset. If you use [`deploy.sh`](deploy.sh) (see [Terraform](#🏗️-terraform-aws-infrastructure) section), this is set automatically.
 
 **5. Build and start:**
 ```bash

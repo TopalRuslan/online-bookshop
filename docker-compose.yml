@@ -21,6 +21,20 @@ services:
       timeout: 5s
       retries: 5
 
+  migrate:
+    build: .
+    command: python manage.py migrate --noinput
+    env_file:
+      - .env
+    environment:
+      DB_HOST: db
+      DB_NAME: bookshop
+      DB_USER: bookshop
+      DB_PASSWORD: bookshop
+    depends_on:
+      db:
+        condition: service_healthy
+
   web:
     build: .
     ports:
@@ -47,6 +61,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
 
   celery:
     build: .
@@ -70,6 +86,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
 
   node-exporter:
     image: prom/node-exporter:latest

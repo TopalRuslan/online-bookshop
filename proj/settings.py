@@ -16,9 +16,13 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-&^c4*7^pm%e8+-d&acg+@-)$!5
 
 DEBUG = os.getenv('DEBUG', 'true').lower() == 'true'
 
+# Dev-safe default. Prod/EC2 sets this explicitly (deploy.sh), Kubernetes via
+# k8s/base/configmap.yaml. 'web' is kept for the Docker network (Prometheus
+# scrapes http://web:8000). k8s liveness/readiness probes bypass this check
+# entirely — see proj/health.py.
 ALLOWED_HOSTS = os.getenv(
     'ALLOWED_HOSTS',
-    'localhost,127.0.0.1,0.0.0.0,13.223.155.69,web',
+    'localhost,127.0.0.1,0.0.0.0,web',
 ).split(',')
 
 
@@ -142,6 +146,7 @@ SPECTACULAR_SETTINGS = {
 }
 
 MIDDLEWARE = [
+    'proj.health.HealthCheckMiddleware',
     'django_prometheus.middleware.PrometheusBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
