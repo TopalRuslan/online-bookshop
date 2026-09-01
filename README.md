@@ -132,6 +132,12 @@ cp env-sample .env
 # fill in SECRET_KEY and Stripe keys
 ```
 
+> `.env` is optional for a basic run. With none of the infra vars set the app
+> uses SQLite, an in-process cache, the console email backend, and runs Celery
+> tasks synchronously — **no PostgreSQL, Redis or Celery worker needed**. Those
+> only come into play with Docker / Kubernetes, or if you set `DB_HOST` /
+> `REDIS_URL` / `CELERY_BROKER_URL` yourself. Stripe checkout needs the keys.
+
 > **Email confirmation** is required on registration. Locally, emails print to the console by default (`EMAIL_BACKEND=console`). The confirmation email template is at `templates/users/email_confirm.html`. To use real SMTP (e.g. Gmail), set these in `.env`:
 > ```
 > EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
@@ -408,7 +414,7 @@ Used for sending confirmation emails asynchronously so the user gets an instant 
 1. User registers → Django puts a task in the Redis queue (database `2`) and immediately returns a response
 2. Celery worker picks up the task and sends the email in the background
 
-Celery worker runs as a separate Docker service and starts automatically with `docker compose up`.
+Celery worker runs as a separate Docker service and starts automatically with `docker compose up`. Without `CELERY_BROKER_URL` set (a bare local `runserver`) tasks run synchronously in-process instead — no worker or Redis required.
 
 **To view worker logs:**
 ```bash
@@ -435,7 +441,7 @@ Used for caching genre and author list responses. Reduces DB load on every page 
 - Cache is automatically invalidated on create/update/delete
 - Redis runs as a separate Docker service (database `1`)
 
-Redis is included in `docker-compose.yml` and starts automatically with `docker compose up`. No additional setup required.
+Redis is included in `docker-compose.yml` and starts automatically with `docker compose up`. No additional setup required. On a bare local `runserver` (no `REDIS_URL`) the cache falls back to in-process memory — Redis is not needed.
 
 **To inspect cached keys:**
 ```bash

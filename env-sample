@@ -29,9 +29,11 @@ DEBUG=true
 # DB_PASSWORD=bookshop
 
 
-# ─── Redis ────────────────────────────────────
-# Leave commented out to use defaults (127.0.0.1).
-# Required when running with Docker (set automatically in docker-compose.yml).
+# ─── Redis / Celery ───────────────────────────
+# Leave unset for a bare `runserver`: cache uses in-process LocMem and Celery
+# tasks run synchronously — no Redis, no worker needed.
+# Set both to use real Redis + a Celery worker. docker-compose sets them
+# automatically.
 # REDIS_URL=redis://redis:6379/1
 # CELERY_BROKER_URL=redis://redis:6379/2
 
